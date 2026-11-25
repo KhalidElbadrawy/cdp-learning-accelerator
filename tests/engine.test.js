@@ -105,11 +105,22 @@ test('parseTransactionRows reads the template and classifies', () => {
   assert.equal(po.role, 'Budget Approver');
   assert.equal(txLevel(po), 'Advanced');
 });
+test('parseTransactionRows: an Activity column works like a Transaction column', () => {
+  for (const h of ['Activity', 'Activities', 'activity name', 'Transaction / Activity']) {
+    const r = parseTransactionRows([['System module', 'Process', h, 'Platform role'], ['Finance', 'Invoicing', 'Create invoice', 'Clerk']]);
+    assert.equal(r.errors.length, 0, h);
+    assert.equal(r.transactions[0].name, 'Create invoice', h);
+    assert.equal(r.transactions[0].role, 'Clerk', h);
+  }
+  const none = parseTransactionRows([['Module', 'Step'], ['Finance', 'Create invoice']]);
+  assert.match(none.errors[0], /"Transaction" or "Activity"/);
+});
+
 test('parseTransactionRows: header search, duplicates, blanks, missing columns', () => {
   const r = parseTransactionRows([['Intro text'], ['', 'Transaction', 'Role'], ['', 'Create invoice', 'Clerk'], ['', 'Create invoice', 'Clerk'], ['', '', 'Clerk']]);
   assert.equal(r.transactions.length, 1);
   assert.ok(r.warnings.some(w => /duplicate/.test(w)));
-  assert.ok(r.warnings.some(w => /without a transaction name/.test(w)));
+  assert.ok(r.warnings.some(w => /without a transaction or activity name/.test(w)));
   assert.ok(r.warnings.some(w => /System module/.test(w)));
   assert.equal(parseTransactionRows([['a', 'b']]).errors.length, 1);
   assert.equal(parseTransactionRows([]).errors.length, 1);

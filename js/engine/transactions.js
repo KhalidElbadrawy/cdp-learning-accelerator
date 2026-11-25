@@ -8,7 +8,10 @@ import { classifyTransaction, levelForType } from './classify.js';
 const HEADER_ALIASES = {
   module: ['system module', 'module', 'platform / process area (module)', 'process area', 'platform module'],
   workflow: ['process', 'processes', 'business process', 'workflow', 'workflows'],
-  name: ['transaction', 'transactions', 'transaction name', 'task'],
+  // Sheets may list system transactions or activities; either column works.
+  name: ['transaction', 'transactions', 'transaction name', 'activity', 'activities', 'activity name', 'system activity', 'system activities',
+    'transaction / activity', 'transaction/activity', 'transactions / activities', 'transactions/activities', 'transaction or activity',
+    'activity / transaction', 'activity/transaction', 'task'],
   role: ['platform role', 'role', 'system role', 'platform roles']
 };
 const norm = s => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
@@ -34,7 +37,7 @@ export function parseTransactionRows(rows) {
   const errors = [], warnings = [];
   if (!Array.isArray(rows) || !rows.length) return { transactions: [], errors: ['The file is empty.'], warnings };
   const head = findHeader(rows);
-  if (!head) return { transactions: [], errors: [`No "Transaction" column found. Use the template columns: ${TEMPLATE_COLUMNS.join(', ')}.`], warnings };
+  if (!head) return { transactions: [], errors: [`No "Transaction" or "Activity" column found. Use the template columns: ${TEMPLATE_COLUMNS.join(', ')} (the Transaction column can also be called Activity).`], warnings };
   ['module', 'workflow', 'role'].forEach(k => {
     if (head.idx[k] == null) warnings.push(`No "${TEMPLATE_COLUMNS[['module', 'workflow', 'name', 'role'].indexOf(k)]}" column found; that field is left blank.`);
   });
@@ -50,9 +53,9 @@ export function parseTransactionRows(rows) {
     seen.add(key);
     transactions.push(makeTransaction(t));
   }
-  if (blank) warnings.push(`${blank} row(s) without a transaction name were skipped.`);
+  if (blank) warnings.push(`${blank} row(s) without a transaction or activity name were skipped.`);
   if (dupes) warnings.push(`${dupes} duplicate row(s) were skipped.`);
-  if (!transactions.length && !errors.length) errors.push('No transactions found under the header row.');
+  if (!transactions.length && !errors.length) errors.push('No transactions or activities found under the header row.');
   return { transactions, errors, warnings };
 }
 

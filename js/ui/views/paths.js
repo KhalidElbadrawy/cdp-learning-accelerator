@@ -19,8 +19,8 @@ export function uploadView(s, init) {
   const tx = init.paths.transactions || [], rep = s.ui.uploadReport;
   return `${flowHeader(init, 'upload')}
   <section class="card">
-    <div class="stack" style="gap:6px"><span class="eyebrow">Create learning paths · Step 1 of 4</span><h2 class="h2">Upload the system transactions</h2>
-      <p class="lead">Upload every system transaction in one spreadsheet with four columns: ${TEMPLATE_COLUMNS.join(', ')}. Download the template and share it with the platform vendor to fill in.</p></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Create learning paths · Step 1 of 4</span><h2 class="h2">Upload the system transactions or activities</h2>
+      <p class="lead">Upload every system transaction or activity in one spreadsheet with four columns: ${TEMPLATE_COLUMNS.join(', ')}. The Transaction column can also be called Activity. Download the template and share it with the platform vendor to fill in.</p></div>
     <div class="row"><button class="btn ghost" data-act="download-template">${icon('download', 15)} Download the template</button><span class="tiny">Excel workbook with an example sheet and filling-in guide</span></div>
     <label class="drop" id="drop" for="tx-file">
       ${icon('upload', 26, '#66BEFF')}
