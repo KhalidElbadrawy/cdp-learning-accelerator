@@ -28,6 +28,7 @@ Opened inside claude.ai as an artifact (no server), Rafeeq falls back to the cla
 ## Deploy on Render
 In Render: **New → Blueprint**, pick this repo, enter `ANTHROPIC_API_KEY` (and optionally `ACCESS_CODE`), and apply.
 `render.yaml` builds the page and starts `server.mjs` as a free web service.
+Every push to `main` redeploys automatically; the tests run first, and a failing build leaves the live version untouched.
 
 ## Hosting notes
 Initiatives are saved in each visitor's own browser (localStorage), not shared between people.

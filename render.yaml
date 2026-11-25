@@ -3,7 +3,11 @@ services:
     name: cdp-learning-accelerator
     runtime: node
     plan: free
-    buildCommand: npm install && node tools/build.mjs
+    branch: main
+    # Every push to main redeploys automatically.
+    autoDeploy: true
+    # Tests run first: if they fail, the deploy stops and the current live version stays up.
+    buildCommand: npm ci && npm test && node tools/build.mjs
     startCommand: node server.mjs
     healthCheckPath: /api/rafeeq/status
     envVars:
