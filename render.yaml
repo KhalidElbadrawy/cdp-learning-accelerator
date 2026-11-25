@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: cdp-learning-accelerator
+    runtime: static
+    buildCommand: node tools/build.mjs
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
