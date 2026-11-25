@@ -9,10 +9,6 @@ const NAV = [
   { id: 'done', label: 'Completed Initiatives', icon: 'check' }
 ];
 
-// Replaced with the build date by tools/build.mjs, so a downloaded copy shows which build it is.
-const BUILD = '__BUILD_STAMP__';
-const buildLabel = BUILD.startsWith('__') ? 'Development build' : BUILD;
-
 export const TITLES = {
   dash: 'Home', ongoing: 'Ongoing Initiatives', done: 'Completed Initiatives', repo: 'Persona Profile',
   needs: 'Business Needs', personas: 'Persona Selection', proficiency: 'Proficiency Level', capability: 'Capability Architecture',
@@ -26,7 +22,6 @@ export function sidebar(s) {
   return `<aside class="side" aria-label="Main navigation">
     <div class="brand">
       <button class="brand-name" data-act="go" data-screen="dash" title="Go to Home"><b>CDP</b> Learning Accelerator<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#66BEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-left:8px" aria-hidden="true"><path d="M3 17.5 8.5 11l4 3.2L21 4.5"></path><path d="M15.5 4.5H21v5.5"></path></svg></button>
-      <span class="badge-v">Demo</span><span class="tiny" style="margin-top:4px;color:var(--faint)">${esc(buildLabel)}</span>
       <p class="tagline">The learning design tool that turns every CDP initiative into a ready, capable workforce</p>
     </div>
     <nav class="nav">${each(NAV, n => `<button data-act="go" data-screen="${n.id}" ${s.screen === n.id ? 'aria-current="page"' : ''}>${icon(n.icon, 18)}<span>${n.label}</span></button>`)}</nav>
