@@ -1,10 +1,13 @@
 services:
   - type: web
     name: cdp-learning-accelerator
-    runtime: static
-    buildCommand: node tools/build.mjs
-    staticPublishPath: .
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: SAMEORIGIN
+    runtime: node
+    plan: free
+    buildCommand: npm install && node tools/build.mjs
+    startCommand: node server.mjs
+    healthCheckPath: /api/rafeeq/status
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false   # Render asks for the value when you apply the blueprint
+      - key: ACCESS_CODE
+        sync: false   # optional: a code visitors enter before Rafeeq answers

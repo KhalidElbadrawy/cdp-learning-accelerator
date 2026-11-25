@@ -1,1 +1,16 @@
-{"type":"module"}
+{
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.14.0"
+  },
+  "name": "cdp-learning-accelerator",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node tools/build.mjs",
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
