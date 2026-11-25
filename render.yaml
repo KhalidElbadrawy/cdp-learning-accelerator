@@ -13,5 +13,3 @@ services:
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false   # Render asks for the value when you apply the blueprint
-      - key: ACCESS_CODE
-        sync: false   # optional: a code visitors enter before Rafeeq answers
