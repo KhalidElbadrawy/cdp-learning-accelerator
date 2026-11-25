@@ -66,7 +66,7 @@ const FAKE = () => {
   await page.addInitScript(FAKE);
   const shot = async n => page.screenshot({ path: path.join(OUT, n + '.png'), fullPage: true });
   const click = async (sel, opts) => { await page.click(sel, opts); await page.waitForTimeout(120); };
-  const step = async (name, fn) => { try { await fn(); console.log('ok  ', name); } catch (e) { console.log('FAIL', name, e.message.split('\n')[0]); await shot('fail-' + name.replace(/\W+/g, '-')); throw e; } };
+  const step = async (name, fn) => { try { await fn(); console.log('ok  ', name); } catch (e) { console.log('FAIL', name, e.message.split('\n')[0]); process.exitCode = 1; await shot('fail-' + name.replace(/\W+/g, '-')); throw e; } };
 
   try {
     await page.goto('http://app.test/index.html');
@@ -217,13 +217,8 @@ const FAKE = () => {
       await shot('16-ongoing-after-delete');
     });
     await step('rafiq', async () => {
-      // Ask panel: a question gets a streamed answer.
-      await click('button[data-act="rafiq-open"]');
-      await page.fill('#rafiq-input', 'What should I do next?');
-      await page.press('#rafiq-input', 'Enter');
-      await page.waitForSelector('.rafiq-msg.bot >> text=practise in the sandbox');
-      await shot('17-rafiq-ask');
-      await click('button[data-act="rafiq-close"]');
+      // The "Ask Rafeeq" chat is switched off for now (RAFEEQ_CHAT in js/main.js): no chat button.
+      if (await page.$('.rafiq-fab:not([hidden])')) throw new Error('Ask Rafeeq chat button should be hidden');
       // Business Needs: accept a measurable outcome and an extra process.
       await click('.nav button:has-text("Completed Initiatives")'); await click('text=Website Hub');
       await click('.phase[data-phase="define"]'); await click('.steps .step >> text=Business Needs');
