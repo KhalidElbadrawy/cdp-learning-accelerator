@@ -64,10 +64,14 @@ function paint(s) {
   }
 }
 
+// The "Ask Rafeeq" chat is switched off for now: Rafeeq only helps polish work through the
+// suggestion cards on each screen. Set to true to bring the chat back.
+const RAFEEQ_CHAT = false;
+
 // "Ask Rafeeq" lives outside #app so redraws never restart its entrance animation.
 let fab = null, fabShown = false;
 function syncFab(s) {
-  const show = !!(s.rafiq && s.rafiq.on && !s.rafiq.open);
+  const show = RAFEEQ_CHAT && !!(s.rafiq && s.rafiq.on && !s.rafiq.open);
   if (!fab && show) {
     fab = document.createElement('button');
     fab.className = 'rafiq-fab';
