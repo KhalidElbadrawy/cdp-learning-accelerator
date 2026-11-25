@@ -9,6 +9,10 @@ const NAV = [
   { id: 'done', label: 'Completed Initiatives', icon: 'check' }
 ];
 
+// The brand arrow animates from page load. Every redraw passes the time since then as a negative
+// animation delay, so re-rendering the sidebar continues the animation instead of restarting it.
+const BOOT = typeof performance !== 'undefined' ? performance.now() : 0;
+
 export const TITLES = {
   dash: 'Home', ongoing: 'Ongoing Initiatives', done: 'Completed Initiatives', repo: 'Persona Profile',
   needs: 'Business Needs', personas: 'Persona Selection', proficiency: 'Proficiency Level', capability: 'Capability Architecture',
@@ -21,7 +25,7 @@ export const TITLES = {
 export function sidebar(s) {
   return `<aside class="side" aria-label="Main navigation">
     <div class="brand">
-      <button class="brand-name" data-act="go" data-screen="dash" title="Go to Home"><b>CDP</b> Learning Accelerator<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#66BEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-left:8px" aria-hidden="true"><path d="M3 17.5 8.5 11l4 3.2L21 4.5"></path><path d="M15.5 4.5H21v5.5"></path></svg></button>
+      <button class="brand-name" data-act="go" data-screen="dash" title="Go to Home"><b>CDP</b> Learning Accelerator<svg class="brand-mark" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#66BEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-left:8px;--bm-t:${-Math.round(performance.now() - BOOT)}ms" aria-hidden="true"><g class="bm-nudge"><path class="bm-line" d="M3 17.5 8.5 11l4 3.2L21 4.5"></path><path class="bm-head" d="M15.5 4.5H21v5.5"></path></g></svg></button>
       <p class="tagline">The learning design tool that turns every CDP initiative into a ready, capable workforce</p>
     </div>
     <nav class="nav">${each(NAV, n => `<button data-act="go" data-screen="${n.id}" ${s.screen === n.id ? 'aria-current="page"' : ''}>${icon(n.icon, 18)}<span>${n.label}</span></button>`)}</nav>

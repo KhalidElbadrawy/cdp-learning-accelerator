@@ -58,6 +58,22 @@ p { margin: 0; }
 .brand { display: flex; flex-direction: column; gap: 10px; }
 .brand-name { font-size: 24px; font-weight: 300; font-style: italic; line-height: 1.1; letter-spacing: -.02em; background: none; border: 0; padding: 0; text-align: left; color: #fff; }
 .brand-name b { font-weight: 600; }
+/* Brand arrow: the trend line draws itself, the arrowhead follows, then every few seconds the
+   arrow nudges up and to the right with a soft glow. --bm-t keeps it in step across redraws. */
+.brand-mark { overflow: visible; }
+.brand-mark .bm-line { stroke-dasharray: 28; stroke-dashoffset: 28; animation: bm-draw .9s cubic-bezier(.65,0,.35,1) calc(var(--bm-t, 0ms) + 250ms) forwards; }
+.brand-mark .bm-head { stroke-dasharray: 12; stroke-dashoffset: 12; animation: bm-draw .35s ease-out calc(var(--bm-t, 0ms) + 1000ms) forwards; }
+.brand-mark .bm-nudge { animation: bm-nudge 6s ease-in-out calc(var(--bm-t, 0ms) + 1600ms) infinite; }
+@keyframes bm-draw { to { stroke-dashoffset: 0; } }
+@keyframes bm-nudge {
+  0%, 78%, 100% { transform: translate(0, 0); filter: none; }
+  86% { transform: translate(1.6px, -1.6px); filter: drop-shadow(0 0 3px rgba(102,190,255,.9)); }
+  93% { transform: translate(0, 0); filter: drop-shadow(0 0 1px rgba(102,190,255,.4)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-mark .bm-line, .brand-mark .bm-head { animation: none; stroke-dashoffset: 0; }
+  .brand-mark .bm-nudge { animation: none; }
+}
 .badge-v { align-self: flex-start; padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(0,149,255,.45); background: rgba(0,149,255,.14); color: var(--blue-pale); font-size: 11px; font-weight: 500; }
 .tagline { font-size: 11.5px; line-height: 1.55; color: var(--faint); }
 .nav { display: flex; flex-direction: column; gap: 6px; }
@@ -4458,6 +4474,10 @@ const NAV = [
   { id: 'done', label: 'Completed Initiatives', icon: 'check' }
 ];
 
+// The brand arrow animates from page load. Every redraw passes the time since then as a negative
+// animation delay, so re-rendering the sidebar continues the animation instead of restarting it.
+const BOOT = typeof performance !== 'undefined' ? performance.now() : 0;
+
 const TITLES = {
   dash: 'Home', ongoing: 'Ongoing Initiatives', done: 'Completed Initiatives', repo: 'Persona Profile',
   needs: 'Business Needs', personas: 'Persona Selection', proficiency: 'Proficiency Level', capability: 'Capability Architecture',
@@ -4470,7 +4490,7 @@ const TITLES = {
 function sidebar(s) {
   return `<aside class="side" aria-label="Main navigation">
     <div class="brand">
-      <button class="brand-name" data-act="go" data-screen="dash" title="Go to Home"><b>CDP</b> Learning Accelerator<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#66BEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-left:8px" aria-hidden="true"><path d="M3 17.5 8.5 11l4 3.2L21 4.5"></path><path d="M15.5 4.5H21v5.5"></path></svg></button>
+      <button class="brand-name" data-act="go" data-screen="dash" title="Go to Home"><b>CDP</b> Learning Accelerator<svg class="brand-mark" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#66BEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-left:8px;--bm-t:${-Math.round(performance.now() - BOOT)}ms" aria-hidden="true"><g class="bm-nudge"><path class="bm-line" d="M3 17.5 8.5 11l4 3.2L21 4.5"></path><path class="bm-head" d="M15.5 4.5H21v5.5"></path></g></svg></button>
       <p class="tagline">The learning design tool that turns every CDP initiative into a ready, capable workforce</p>
     </div>
     <nav class="nav">${each(NAV, n => `<button data-act="go" data-screen="${n.id}" ${s.screen === n.id ? 'aria-current="page"' : ''}>${icon(n.icon, 18)}<span>${n.label}</span></button>`)}</nav>
